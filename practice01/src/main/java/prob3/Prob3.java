@@ -21,7 +21,7 @@ public class Prob3 {
 			}
 		}
 
-		System.out.println("결과값: " + sum);
+		System.out.println("결과 값: " + sum);
 
 		scanner.close();
 	}
