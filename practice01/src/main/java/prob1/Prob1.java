@@ -7,7 +7,7 @@ public class Prob1 {
 		Scanner scanner = new Scanner( System.in );
 		
 		/* 코드 작성 */
-		System.out.println("finished");
+		System.out.println("finished2");
 		
 		scanner.close();
 	}
