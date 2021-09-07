@@ -12,11 +12,11 @@ public class Prob3 {
 
 		System.out.print("수를 입력 하세요 : ");
 
-		int number = scanner.nextInt();
+		int num = scanner.nextInt();
 		int sum = 0;
 
-		for (int i = 0; i <= number; i++) {
-			if (number % 2 == 0 && i % 2 == 0 || number % 2 != 0 && i % 2 != 0) {
+		for (int i = 0; i <= num; i++) {
+			if (num % 2 == 0 && i % 2 == 0 || num % 2 != 0 && i % 2 != 0) {
 				sum += i;
 			}
 		}
