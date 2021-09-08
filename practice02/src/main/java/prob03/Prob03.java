@@ -12,15 +12,25 @@ public class Prob03 {
 
 		// 수정된 배열 원소 출력
 		printCharArray(c);
-		
-		
+
 	}
 
+//	public static void replaceSpace(char a[]) {
+//		String pencile = String.valueOf(a);
+//		pencile = pencile.replaceAll(" ", ",");
+//		System.out.println(pencile);
+//	}
+
 	public static void replaceSpace(char a[]) {
-		
+		for (int i = 0; i < a.length; i++) {
+			if (a[i] == ' ') {
+				a[i] = ',';
+			}
+		}
 	}
-	
+
 	public static void printCharArray(char a[]) {
-		
+		System.out.println(a);
 	}
+
 }

@@ -14,12 +14,33 @@ public class GoodsApp {
 		goods.setPrice(2000);
 		goods.setCountStock(10);
 		goods.setCountSold(20);
+		// 로직을 먼저 세우고 에러뜨면 Create method로 method 생성하기 
+		// public void showInfo() {}
+
 		
-		System.out.println(goods);
+//		System.out.println(goods);
 		// 출력결과 : chapter03.Goods@15db9742
 		// toString 결과를 불러옴, 객체의 위치 (address)를 Hashing
+
+		goods.showInfo();
+		// 로직 세운 이후 결과 불러오기
 		
 		
+		Goods goods2 = new Goods();
+		Goods goods3 = new Goods();
+		
+		int discountPrice = goods.calDiscountPrice(50);
+		System.out.println(discountPrice);
+
+		System.out.println(Goods.countOfGoods);
+		
+		//-----------------------------------------
+		
+		String s = "콜라 1000 10";
+		String[] tokens = s.split("");
+		for(String str : tokens) {
+			System.out.printf(str);
+		}
 	}
 
 }
