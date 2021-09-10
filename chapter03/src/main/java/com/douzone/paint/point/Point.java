@@ -1,8 +1,20 @@
-package paint;
+package com.douzone.paint.point;
 
-public class Point {
+import com.douzone.paint.i.Drawable;
+
+public class Point implements Drawable{
 	private int x;
 	private int y;
+	
+	public Point() {
+		// super를 사용하려면 생성해주어야 함
+	}
+
+	public Point(int x, int y) {
+		this.x = x; // 생성자를 명시했기 때문에 기본 생성자가 없어짐
+		this.y = y;
+	}
+	
 
 	public int getX() {
 		return x;
@@ -32,6 +44,13 @@ public class Point {
 		} else {
 			System.out.println("점[x=" + x + ", y=" + y + "]을 지웠습니다.");
 		}
+	}
+
+	@Override
+	public void draw() {
+		// implements 하면 생성됨
+		show();
+		
 	}
 	
 //	public void disapear() {
