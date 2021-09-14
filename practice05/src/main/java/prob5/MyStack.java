@@ -14,7 +14,7 @@ public class MyStack {
 			resize();
 		}
 
-		buffer[++top] = s;
+		buffer[++top] = s;		
 	}
 
 	public String pop() throws MyStackException {

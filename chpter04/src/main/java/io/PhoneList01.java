@@ -45,12 +45,22 @@ public class PhoneList01 {
 //				}
 				
 				StringTokenizer st = new StringTokenizer(line, "\t");
-
-				while(st.hasMoreElements()) {
-					String token = st.nextToken();
-					System.out.print(token + "=");
-				}
-				System.out.println("");
+				int index = 0;
+	            while(st.hasMoreElements()) {
+	               String token = st.nextToken();
+	               if(index == 0) { //이름
+	                  System.out.println(token + ":");
+	               }else if(index == 2){
+	                  System.out.println(token + "-");
+	               }else if(index == 3){
+	                  System.out.println(token + "-");
+	               } else {
+	                  System.out.println(token);
+	               }
+	               index++;
+	               
+	               System.out.println(token + "=");
+	            }
 
 			}
 
