@@ -8,8 +8,10 @@ public class LocalHost {
 	public static void main(String[] args) {
 		// localHost : 프로그램이 돌고 있는 지역 / 자신의 PC		
 		// InetAddress : 자바에서 IP 주소를 표현할때 사용하는 클래스
+		//               Host 이름 + IP 주소
 		try {
 			InetAddress inetAddress = InetAddress.getLocalHost();
+			System.out.println("inetAddress : " + inetAddress);
 			
 			String hostname = inetAddress.getHostName(); // Host 이름
 			System.out.println(hostname); // 결과 : 704-31
