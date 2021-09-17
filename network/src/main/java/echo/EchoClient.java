@@ -8,63 +8,55 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Scanner;
 
 public class EchoClient {
 	private static final String SERVER_IP = "127.0.0.1";
 	private static final int SERVER_PORT = 6000;
 	
 	public static void main(String[] args) {
-		Socket socket = null;
-		Scanner scanner = null;
-		try {
-			scanner = new Scanner(System.in);
-			
-			socket = new Socket();
-			
+		// 1. Client 소켓 생성
+		// 2. Server에 Connect
+		
+		try (Socket socket = new Socket()) {
 			socket.connect(new InetSocketAddress(SERVER_IP, SERVER_PORT));
-			log("connected");
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-			PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
+			
+			log("Connected To Server.");
+			
+			BufferedReader response = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+			PrintWriter request = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
+			BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in)); //charset 인자를 주지않으면, 자동으로 시스템의 charset으로 세팅함
+			
+			while(true) {				
+				// 쓰기
+				System.out.print(">> [send to server] ");
+				String input = inputReader.readLine();
+		
+				if(input == null || "exit".equals(input))
+					break;
+				
+				request.println(input);
 
-			while(true) {
-				System.out.print(">");
-				String line = scanner.nextLine();
 				
-				if("exit".equals(line)) {
-					break;
+				// 읽기
+				String responseString = response.readLine();
+				if (responseString == null) {
+					//server로부터의 정상종료
+					log("[client] closed by server");
 				}
 				
-				pw.println(line);
-				
-				String data = br.readLine();
-				if(data == null) {
-					log("closed by server");
-					break;
-				}
-				
-				System.out.println("<" + data);
+				System.out.print("<< [response by server]");
+				System.out.println(responseString);
 			}
-		} catch(SocketException e) {
-			log("suddenly closed by server");
-		} catch(IOException e) {
-			log("error:" + e);
-		} finally {
-			try {
-				if(scanner != null) {
-					scanner.close();
-				}
-				if(socket != null && socket.isClosed() == false) {
-					socket.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} catch (SocketException e) {
+			log("[client] suddenly closed by server: " + e);
+		} catch (IOException e) {
+			log("[client] error: " + e);
 		}
+
 	}
-	
-	private static void log(String log) {
-		System.out.println("[Echo Client] " + log);
+
+	private static void log(String logString) {
+		System.out.println(logString);
 	}
 }

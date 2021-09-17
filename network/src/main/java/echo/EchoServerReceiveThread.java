@@ -7,49 +7,53 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 
-public class EchoServerReceiveThread extends Thread{
+public class EchoServerReceiveThread extends Thread {
+	private Socket socket;
+	
+	public EchoServerReceiveThread(Socket socket) {
+		this.socket = socket;
+	}
+	
+	@Override
+	public void run() {
+		InetSocketAddress remoteAddr = (InetSocketAddress) socket.getRemoteSocketAddress();
+		EchoServer.log("[server] connected by client[" + remoteAddr.getAddress().getHostAddress() + ":" + remoteAddr.getPort());
+		try {
+			// 4. I/O Stream 받아오기
+			// 바이트 스트림을 문자 스트림으로 변경
+			BufferedReader request = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
+			PrintWriter response = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
+			while (true) {
+				// 5. 데이터 읽기
 
-   private Socket socket;
-   
-   public EchoServerReceiveThread(Socket socket) {
-      super();
-      this.socket = socket;
-   }
+				// blocking method
+				System.out.println("---------------------------");
+				String rcvString = request.readLine();
+				System.out.println("---------------------------");
+				System.out.println(rcvString);
+				if (rcvString == null) {
+					// client가 정상적으로 종료(close() 호출)
+					EchoServer.log("[server] closed by client");
+					break;
+				}
 
-   @Override
-   public void run() {
-      
-      InetSocketAddress inetRemoteSocketAddress = (InetSocketAddress)socket.getRemoteSocketAddress();
-      String remoteHostAddress = inetRemoteSocketAddress.getAddress().getHostAddress();
-      int remoteHostPort = inetRemoteSocketAddress.getPort();
-      EchoServer.log("connected by client[" + remoteHostAddress + ":" + remoteHostPort + "]");
-      
-      try {
-         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-         PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
-         
-         while(true) {
-            String data = br.readLine();
-            if(data == null) {
-               EchoServer.log("closed by client");
-               break;
-            }
-            
-            EchoServer.log("received:" + data);
-            pw.println(data);
-         }
-      } catch(IOException e) {
-         EchoServer.log("error:" + e);
-      } finally {
-         try {
-            if(socket != null && socket.isClosed() == false) {
-               socket.close();
-            }
-         } catch(IOException e) {
-            e.printStackTrace();
-         }
-      }
+				EchoServer.log(rcvString);
+				response.println(rcvString);
+			}
+		} catch (SocketException e) {
+			EchoServer.log("[server] suddenly closed by client");
+		} catch (IOException e) {
+			EchoServer.log("[server] error " + e);
+		} finally {
+			try {
+				if (socket != null && !socket.isClosed())
+					socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-   }
 }

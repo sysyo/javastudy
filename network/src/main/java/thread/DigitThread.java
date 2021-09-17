@@ -1,6 +1,6 @@
 package thread;
 
-public class DigitTread extends Thread{
+public class DigitThread extends Thread{
 
 	@Override
 	public void run() {
