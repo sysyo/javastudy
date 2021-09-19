@@ -150,9 +150,10 @@ public class ChatServerThread extends Thread {
 		}
 	}
 
-	private void log(String log) {
-		System.out.println("[ChatServer] " + log);
-
-	}
+	// ChatServer.log
+//	private void log(String log) {
+//		System.out.println("[ChatServer] " + log);
+//
+//	}
 
 }
