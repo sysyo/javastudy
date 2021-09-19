@@ -53,7 +53,9 @@ public class ChatServerThread extends Thread {
 				String request = bufferedReader.readLine();
 
 				if (request == null) {
-					log("클라이언트로 부터 연결 끊김");
+					// log("클라이언트로 부터 연결 끊김");
+					ChatServer.log("클라이언트로 부터 연결 끊김");
+				    doQuit(printWriter);
 					break;
 				}
 
@@ -61,12 +63,16 @@ public class ChatServerThread extends Thread {
 				String[] tokens = request.split(":");
 				if ("join".equals(tokens[0])) {
 					doJoin(tokens[1], printWriter);
+					
 				} else if ("message".equals(tokens[0])) {
 					doMessage(tokens[1]);
+					
 				} else if ("quit".equals(tokens[0])) {
-					doQuit();
+					doQuit(printWriter);
+					
 				} else {
 					ChatServer.log("에러:알수 없는 요청(" + tokens[0] + ")");
+					
 				}
 
 			}
@@ -77,21 +83,44 @@ public class ChatServerThread extends Thread {
 
 	}
 
-	private void doMessage(String string) {
-		for(Writer printWriter : ChatServer.listWriters) {
-			
-		}
-		
+	private void doQuit(Writer writer) {
+		// “OOO님이 퇴장 하였습니다” 메시지가 브로드캐스팅 되어야 한다.
+
+		// 현재 스레드의 writer를 Writer Pool에서 제거한 후, 브로드캐스팅 한다.
+		removeWriter(writer);
+
+		String data = nickname + "님이 퇴장 하였습니다.";
+		broadcast(data);
+
 	}
 
-	// doJoin은 한 사용자가 채팅 방에 참여했을 때, 다른 사용자들에게 
+	private void removeWriter(Writer writer) {
+		// 현재 스레드의 writer를 Writer Pool에서 제거
+		synchronized (listWriters) {
+			// synchronized : 여러 스레드가 하나의 공유 객체에 접근할 때, 동기화를 보장 해준다
+			// ArrayList.remove(Object o)
+			// 인자로 삭제하려는 아이템을 전달하고, 리스트에 그 아이템이 존재하여 삭제되는 경우 true를 리턴
+			listWriters.remove(writer);
+		}
+
+	}
+
+	private void doMessage(String message) {
+		// “message:하이 ^^;\r\n”
+		// "nickName:message"
+		String data = nickname + ":" + message;
+		broadcast(data);
+
+	}
+
+	// doJoin은 한 사용자가 채팅 방에 참여했을 때, 다른 사용자들에게
 	// "OOO님이 입장하셨습니다." 라는 메세지를 브로드캐스팅 해야 한다.
 	private void doJoin(String nickName, Writer writer) {
 		this.nickname = nickName;
 
 		String data = nickName + "님이 참여하였습니다.";
 		broadcast(data);
-		
+
 		// writer pool에 현재 스레드의 writer인 printWirter를 저장해야 한다.
 		addWriter(writer);
 
@@ -110,17 +139,17 @@ public class ChatServerThread extends Thread {
 
 	// 서버에 연결된 모든 클라이언트에 메세지를 보내는 broadcast 메소드
 	private void broadcast(String data) {
-		synchronized (listWriters) { 
+		synchronized (listWriters) {
 			// 스레드 간 공유 객체인 listWriters에 접근하기 때문에 동기화 처리를 해 주어야 한다.
-			for(Writer writer : listWriters) {
-				// PrintWriter의 메서드를 사용해야하기 때문에 다운캐스팅을 명시적으로
-				PrintWriter printWriter = (PrintWriter)writer;
+			for (Writer writer : listWriters) {
+				// PrintWriter의 메서드를 사용해야하기 때문에 다운캐스팅을 명시적으로 사용
+				PrintWriter printWriter = (PrintWriter) writer;
 				printWriter.println(data);
 				printWriter.flush(); // 버퍼에 있는 데이터를 모두 처리
 			}
 		}
 	}
-	
+
 	private void log(String log) {
 		System.out.println("[ChatServer] " + log);
 
