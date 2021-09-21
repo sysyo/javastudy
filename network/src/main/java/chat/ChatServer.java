@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatServer {
+//	private static final String SERVER_IP = "127.0.0.1";
 	private static final int PORT = 8080;
 	// main thread에서 PrintWirter를 담을 수 있는 List 생성
 	static List<Writer> listWriters = new ArrayList<Writer>();
@@ -24,7 +25,10 @@ public class ChatServer {
 			// 2. 바인딩
 			String hostAddress = InetAddress.getLocalHost().getHostAddress();
 			serverSocket.bind(new InetSocketAddress(hostAddress, PORT));
-			log("연결 기다림" + hostAddress + ":" + PORT);
+//			serverSocket.bind(new InetSocketAddress("0.0.0.0", PORT));
+//			serverSocket.bind(new InetSocketAddress(SERVER_IP, PORT));
+
+			log("연결 기다림 " + hostAddress + ":" + PORT);
 			
 			// 3. 요청 대기
 			while(true) {

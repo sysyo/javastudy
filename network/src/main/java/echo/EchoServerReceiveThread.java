@@ -29,9 +29,7 @@ public class EchoServerReceiveThread extends Thread {
 				// 5. 데이터 읽기
 
 				// blocking method
-				System.out.println("---------------------------");
 				String rcvString = request.readLine();
-				System.out.println("---------------------------");
 				System.out.println(rcvString);
 				if (rcvString == null) {
 					// client가 정상적으로 종료(close() 호출)

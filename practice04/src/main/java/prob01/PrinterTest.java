@@ -10,9 +10,11 @@ public class PrinterTest {
 		printer.println( 5.7 );
 		printer.println( "홍길동" );
 
-		System.out.println(printer.sum(1, 2));
-		System.out.println(printer.sum(1, 2, 3, 4, 5));
-		System.out.println(printer.sum(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+		System.out.println("===========");
+	
+		System.out.println(printer.sum(1, 2)); // 출력 : 3
+		System.out.println(printer.sum(1, 2, 3, 4, 5)); // 출력 : 15
+		System.out.println(printer.sum(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)); // // 출력 : 55
 
 
 	}

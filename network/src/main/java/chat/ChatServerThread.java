@@ -27,6 +27,9 @@ public class ChatServerThread extends Thread {
 		this.listWriters = listWriters;
 	}
 
+	BufferedReader bufferedReader = null;
+	PrintWriter printWriter = null;
+
 	/*
 	 * 
 	 * 2. 요청 처리를 위한 Loop 작성 - run 메소드 오버라이딩 - main thread로 부터 전달받은 socket을 통해 IO
@@ -38,15 +41,14 @@ public class ChatServerThread extends Thread {
 	public void run() {
 		// 1. Remote Host Information
 		InetSocketAddress remoteAddr = (InetSocketAddress) socket.getRemoteSocketAddress();
-		ChatServer.log("[server] connected by client[" + remoteAddr.getAddress().getHostAddress() + ":"
-				+ remoteAddr.getPort());
+		ChatServer.log("[server] connected by client [" + remoteAddr.getAddress().getHostAddress() + ":"
+				+ remoteAddr.getPort() + "]");
 
 		try {
 			// 2. 스트림 얻기
-			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-			PrintWriter printWriter = new PrintWriter(
-					new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+			bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+			printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8),
+					true);
 
 			// 3. 요청 처리
 			while (true) {
@@ -55,7 +57,7 @@ public class ChatServerThread extends Thread {
 				if (request == null) {
 					// log("클라이언트로 부터 연결 끊김");
 					ChatServer.log("클라이언트로 부터 연결 끊김");
-				    doQuit(printWriter);
+					doQuit(printWriter);
 					break;
 				}
 
@@ -63,22 +65,26 @@ public class ChatServerThread extends Thread {
 				String[] tokens = request.split(":");
 				if ("join".equals(tokens[0])) {
 					doJoin(tokens[1], printWriter);
-					
 				} else if ("message".equals(tokens[0])) {
 					doMessage(tokens[1]);
-					
 				} else if ("quit".equals(tokens[0])) {
 					doQuit(printWriter);
-					
 				} else {
-					ChatServer.log("에러:알수 없는 요청(" + tokens[0] + ")");
-					
+					ChatServer.log("에러 : 알 수 없는 요청(" + tokens[0] + ")");
+					ChatServer.log(request);
 				}
 
 			}
 
 		} catch (IOException e) {
-			ChatServer.log("[server] error " + e);
+			ChatServer.log("[server] error :" + e);
+		} finally {
+			try {
+				if ((socket != null && socket.isClosed()) == false) {
+					socket.close();
+				}
+			} catch (Exception e) {
+			}
 		}
 
 	}
@@ -115,19 +121,19 @@ public class ChatServerThread extends Thread {
 
 	// doJoin은 한 사용자가 채팅 방에 참여했을 때, 다른 사용자들에게
 	// "OOO님이 입장하셨습니다." 라는 메세지를 브로드캐스팅 해야 한다.
-	private void doJoin(String nickName, Writer writer) {
-		this.nickname = nickName;
+	private void doJoin(String nickname, Writer writer) {
+		this.nickname = nickname;
 
-		String data = nickName + "님이 참여하였습니다.";
+		String data = nickname + "님이 참여하였습니다.";
 		broadcast(data);
 
 		// writer pool에 현재 스레드의 writer인 printWirter를 저장해야 한다.
 		addWriter(writer);
 
 		// ack를 보내 방 참여가 성공했다는 것을 클라이언트에게 알려 줘야 한다.
-		PrintWriter pritWriter = new PrintWriter(writer);
-		pritWriter.println("join:ok");
-		pritWriter.flush();
+		printWriter = new PrintWriter(writer);
+		printWriter.println("join:ok");
+		printWriter.flush();
 	}
 
 	private void addWriter(Writer writer) {
