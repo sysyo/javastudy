@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 
 public class ChatClientReceiveThread extends Thread {
@@ -21,11 +22,14 @@ public class ChatClientReceiveThread extends Thread {
 		try {
 			BufferedReader bufferedReader = new BufferedReader(
 					new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+			
 			while (true) {
 				String request = bufferedReader.readLine();
 				System.out.println(request);
 			}
 
+		} catch (SocketException e) {
+			ChatClient.log("suddenly closed by client");
 		} catch (IOException e) {
 			ChatClient.log("[client] error : " + e);
 		} finally { // 자원 정리

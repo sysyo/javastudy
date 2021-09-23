@@ -13,7 +13,8 @@ import java.util.Scanner;
 
 public class ChatClient {
 	// [ChatServer] 연결 기다림 192.168.35.61:8080
-	private static final String SERVER_IP = "192.168.35.61";
+//	private static final String SERVER_IP = "192.168.35.61";
+	private static final String SERVER_IP = "210.113.134.157";
 	private static final int SERVER_PORT = 8080;
 	
 	public static void main(String[] args) {
@@ -85,3 +86,6 @@ public class ChatClient {
 	}
 
 }
+
+// cd C:\douzone2021\eclipse-workspace\javastudy\network\target\classes
+// java chat.ChatClient

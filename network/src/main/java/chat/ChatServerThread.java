@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -76,6 +77,8 @@ public class ChatServerThread extends Thread {
 
 			}
 
+		} catch (SocketException e) {
+			ChatClient.log("퇴장~~");
 		} catch (IOException e) {
 			ChatServer.log("[server] error :" + e);
 		} finally {

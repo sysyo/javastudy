@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,8 @@ public class ChatServer {
 				new ChatServerThread(socket, listWriters).start();
 				
 			}
+		} catch (SocketException e) {
+			ChatClient.log("퇴장~~");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -49,3 +52,7 @@ public class ChatServer {
 	}
 
 }
+
+
+// cd C:\douzone2021\eclipse-workspace\javastudy\network\target\classes
+// java chat.ChatServer
