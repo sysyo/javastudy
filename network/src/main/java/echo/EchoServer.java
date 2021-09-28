@@ -9,11 +9,11 @@ public class EchoServer {
 	public static void main(String[] args) {
 		ServerSocket serverSocket = null;
 		try {
-			// 1. 서버소켓 생성
+			// 1. 서버소켓 생성 
 			serverSocket = new ServerSocket();
 
 			// 2. binding
-			serverSocket.bind(new InetSocketAddress("0.0.0.0", 9999));
+			serverSocket.bind(new InetSocketAddress("0.0.0.0", 8888));
 
 			// 3. accept - 연결 요청 기다림
 			while(true) {
